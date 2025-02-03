@@ -4,61 +4,63 @@ import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
+type ToastVariant = "success" | "destructive" | "default";
+
+type ToastConfig = {
+  title: string;
+  description: string;
+  variant: ToastVariant;
+};
+
+const TOAST_CONFIG: Record<string, ToastConfig> = {
+  login: {
+    title: "Logged in",
+    description: "You have been successfully logged in",
+    variant: "success",
+  },
+  signUp: {
+    title: "Signed up",
+    description: "Check your email for a confirmation link",
+    variant: "success",
+  },
+  newNote: {
+    title: "New Note",
+    description: "You have successfully created a new note",
+    variant: "success",
+  },
+  logOut: {
+    title: "Logged out",
+    description: "You have been successfully logged out",
+    variant: "success",
+  },
+};
+
+type ToastType = keyof typeof TOAST_CONFIG;
+
+function isToastType(value: string | null): value is ToastType {
+  return value !== null && value in TOAST_CONFIG;
+}
+
 function HomeToast() {
-  const loginToast = !!useSearchParams().get("login") || false;
-  const signUpToast = !!useSearchParams().get("signUp") || false;
-  const newNoteToast = !!useSearchParams().get("newNote") || false;
-  const logOutToast = !!useSearchParams().get("logOut") || false;
+  const toastType = useSearchParams().get("toastType");
   const { toast } = useToast();
 
-  const removeUrlParam = (param: string) => {
+  const removeUrlParam = () => {
     const searchParams = new URLSearchParams(window.location.search);
-    searchParams.delete(param);
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+    searchParams.delete("toastType");
+    const newUrl = `${window.location.pathname}${searchParams.toString() ? `?${searchParams}` : ""}`;
     window.history.replaceState({}, "", newUrl);
   };
 
   useEffect(() => {
-    if (loginToast) {
+    if (isToastType(toastType)) {
       toast({
-        title: "Logged in",
-        description: "You have been successfully logged in",
-        variant: "success",
+        ...TOAST_CONFIG[toastType],
       });
 
-      removeUrlParam("login");
+      removeUrlParam();
     }
-
-    if (signUpToast) {
-      toast({
-        title: "Signed up",
-        description: "Check your email for a confirmation link",
-        variant: "success",
-      });
-
-      removeUrlParam("signUp");
-    }
-
-    if (newNoteToast) {
-      toast({
-        title: "New Note",
-        description: "You have successfully created a new note",
-        variant: "success",
-      });
-
-      removeUrlParam("newNote");
-    }
-
-    if (logOutToast) {
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out",
-        variant: "success",
-      });
-
-      removeUrlParam("logOut");
-    }
-  }, [loginToast, signUpToast, newNoteToast, logOutToast, toast]);
+  }, [toastType, toast]);
 
   return null;
 }
