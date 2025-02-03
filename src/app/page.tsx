@@ -2,13 +2,12 @@ import { getUser } from "@/auth/server";
 import AskAIButton from "@/components/AskAIButton";
 import NewNoteButton from "@/components/NewNoteButton";
 import NoteTextInput from "@/components/NoteTextInput";
+import HomeToast from "@/components/HomeToast";
 import { prisma } from "@/db/prisma";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
-
-// dank
 
 async function HomePage({ searchParams }: Props) {
   const noteIdParam = (await searchParams).noteId;
@@ -30,6 +29,8 @@ async function HomePage({ searchParams }: Props) {
       </div>
 
       <NoteTextInput noteId={noteId} startingNoteText={note?.text || ""} />
+
+      <HomeToast />
     </div>
   );
 }
