@@ -8,6 +8,8 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// dank
+
 async function HomePage({ searchParams }: Props) {
   const noteIdParam = (await searchParams).noteId;
   const user = await getUser();
