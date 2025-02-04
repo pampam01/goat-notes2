@@ -6,8 +6,6 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-import { useToast } from "@/hooks/use-toast";
-import { debounceTimeout } from "@/lib/constants";
 import { createNoteAction } from "@/actions/notes";
 
 type Props = {
@@ -17,8 +15,6 @@ type Props = {
 function NewNoteButton({ user }: Props) {
   const router = useRouter();
 
-  const { toast } = useToast();
-
   const [loading, setLoading] = useState(false);
 
   const handleClickNewNoteButton = async () => {
@@ -26,21 +22,10 @@ function NewNoteButton({ user }: Props) {
       router.push("/login");
     } else {
       setLoading(true);
-      const savingToast = toast({
-        title: "Saving Current Note",
-        description: "Saving your current note before creating a new one",
-        variant: "default",
-      });
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, debounceTimeout + 500),
-      );
 
       const uuid = uuidv4();
       await createNoteAction(uuid);
       router.push(`/?noteId=${uuid}&toastType=newNote`);
-
-      savingToast.dismiss();
 
       setLoading(false);
     }

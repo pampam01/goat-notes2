@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { Textarea } from "./ui/textarea";
 import { ChangeEvent, useEffect } from "react";
-import { debounceTimeout } from "@/lib/constants";
 import useNote from "@/hooks/useNote";
 import { updateNoteAction } from "@/actions/notes";
 
@@ -32,7 +31,7 @@ function NoteTextInput({ noteId, startingNoteText }: Props) {
     clearTimeout(updateTimeout);
     updateTimeout = setTimeout(() => {
       updateNoteAction(noteId, text);
-    }, debounceTimeout);
+    }, 1500);
   };
 
   return (
@@ -40,7 +39,7 @@ function NoteTextInput({ noteId, startingNoteText }: Props) {
       value={noteText}
       onChange={handleUpdateNote}
       placeholder="Type your notes here.."
-      className="custom-scrollbar placeholder:text-muted-foreground mb-4 h-full max-w-4xl resize-none border p-4 focus-visible:ring-0 focus-visible:ring-offset-0"
+      className="custom-scrollbar mb-4 h-full max-w-4xl resize-none border p-4 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
     />
   );
 }
