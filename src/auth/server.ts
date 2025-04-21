@@ -1,3 +1,5 @@
+'use server'
+
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -17,7 +19,9 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options),
             );
-          } catch {}
+          } catch(error) {
+            console.log(error)
+          }
         },
       },
     },
